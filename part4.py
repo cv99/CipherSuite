@@ -190,11 +190,12 @@ class Message:
     def clean(self, obj):
         """Removes everything but letters from rawText and updates tne render."""
         obj.touch = None
-        self.rawText = [x for x in self.rawText.upper() if x in alphabet.upper()]
+        self.rawText = [x for x in self.rawText.upper() if x in ''.join(x.upper() for x in alphabet)]
         self.rendUpdate()
 
     def columnReorder(self, column: int, placesToDrag: int):
         """Reorders the different columns in the rawText."""
+        # TODO: Right function.
         pass
 
     def doReplace(self, replaceFieldA, replaceFieldB):

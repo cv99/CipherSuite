@@ -2,23 +2,30 @@ from part3 import *
 
 
 def columnise(obj):
-    """Unfinished: Searches for a good column length for the message."""
-    # TODO: Finish function.
+    """Searches for a good column length for the message."""
+
     obj.touch = None
+    if VC.quadgrams is None:
+        VC.loadquadgrams()
 
-    mask = ''
-    for x in message.rawText:
-        if x.lower() in alphabet:
-            mask += x
-        else:
-            mask += VC.BlankLetter
-    print('Initialising columnise operation on message (OVERIDES SELECTION). (length:', str(len(mask)) + ')')
-    for kl in range(0, 30):
-        grid = [[] for n in range(kl)]
+    message.clean(VC)
 
-    clength = 7
+    results = dict([key, 0] for key in range(3, 30))
+    for colLength in results.keys():
+        sc = 0
+        for column in range(colLength):
+            sc += ioc(''.join(x for n, x in enumerate(message.rawText) if n % colLength == column))
+        results[colLength] = sc
+
+    results = [[a, results[a]] for a in sorted(list(results), key=(lambda x: results[x]), reverse=True)]
+    average = sum([a[1] for a in results]) / len(results)
+    print('In columnise operation, average score was', average, 'and the highest score was', results[0][1],
+          'for keylength', str(results[0][0]) + '. The message has been updated.')
+
+    clength = results[0][0]
     VC.gridSize = clength
     VC.gridSizeField.text = [str(clength)]
+    message.rendUpdate()
 
 
 def doColumnVis(obj):
