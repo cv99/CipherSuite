@@ -6,6 +6,7 @@ import time
 
 class Message:
     """Contains message information, both visual and back-end."""
+
     def __init__(self, text: str, x=10, y=70):
         self.rawText = ''.join(
             [x for x in text.replace('\n', ' ') if x.lower() in alphabet or x in ['', ',', '.', '0', '1', '2']])
@@ -22,6 +23,8 @@ class Message:
         self.gridMask = []
         self.colDragging = False
         self.startDragColumn = 0
+        self.hasDragHistory = False
+        self.dragHistory = None
         self.colDragRel = 0
         self.colDragStart = 0
 
@@ -195,8 +198,32 @@ class Message:
 
     def columnReorder(self, column: int, placesToDrag: int):
         """Reorders the different columns in the rawText."""
-        # TODO: Right function.
-        pass
+
+        reLookIndexList = [x for x in range(VC.gridSize)]
+        reLookIndexList.remove(column)
+        reLookIndexList.insert(column + placesToDrag, column)
+
+        if not self.hasDragHistory or not (len(self.dragHistory) == VC.gridSize):
+            self.dragHistory = [str(x) for x in reLookIndexList]
+        else:
+            self.dragHistory = [self.dragHistory[n] for n in reLookIndexList]
+        self.hasDragHistory = True
+
+        print(reLookIndexList)
+
+        columns = [[x for n, x in
+                    enumerate(message.rawText) if n % VC.gridSize == column] for column in range(VC.gridSize)]
+        newColumns = [columns[reLookIndexList[p]] for p in range(VC.gridSize)]
+
+        newText = ''
+        for n in range(len(message.rawText) + VC.gridSize): # in final row reordering errors can cause problems.
+            try:
+                newText += newColumns[n % VC.gridSize][n // VC.gridSize]
+            except IndexError:
+                pass
+        message.rawText = newText
+
+        message.rendUpdate()
 
     def doReplace(self, replaceFieldA, replaceFieldB):
         """Replaces the given characters."""
@@ -336,7 +363,12 @@ class Message:
                 self.displayMask[n // VC.lineSize] += x
 
         into_table = ''.join([x for x in self.rawText if x.upper() in alphabet.upper() + numbers])
-        self.grid = [''.join([str(n) for n in range(VC.gridSize)])]
+        if not self.hasDragHistory:
+            self.grid = [''.join([str(n) for n in range(VC.gridSize)])]
+            self.gridMask = [''.join([str(n) for n in range(VC.gridSize)])]
+        else:
+            self.grid = [self.dragHistory]
+            self.gridMask = [self.dragHistory]
         for x in range(len(into_table) // VC.gridSize):
             self.grid.append(into_table[x * VC.gridSize:(x + 1) * VC.gridSize])
 
@@ -347,7 +379,6 @@ class Message:
                 o += ' '
             else:
                 o += x
-        self.gridMask = [''.join([str(n) for n in range(VC.gridSize)])]
         for x in range(len(o) // VC.gridSize):
             self.gridMask.append(o[x * VC.gridSize:(x + 1) * VC.gridSize])
 

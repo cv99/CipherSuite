@@ -1,7 +1,8 @@
 from part3 import *
 
 
-def columnise(obj):
+# noinspection SpellCheckingInspection, PyTypeChecker
+def calculate_key_length(obj):
     """Searches for a good column length for the message."""
 
     obj.touch = None
@@ -22,9 +23,9 @@ def columnise(obj):
     print('In columnise operation, average score was', average, 'and the highest score was', results[0][1],
           'for keylength', str(results[0][0]) + '. The message has been updated.')
 
-    clength = results[0][0]
-    VC.gridSize = clength
-    VC.gridSizeField.text = [str(clength)]
+    column_length = results[0][0]
+    VC.gridSize = column_length
+    VC.gridSizeField.text = [str(column_length)]
     message.rendUpdate()
 
 
@@ -176,7 +177,7 @@ reverseButton = Panel(VC, 1000, 280, 160, 40, typ='button', text=['Reverse'], te
 cleanUpButton = Panel(VC, 1000, 330, 160, 40, typ='button', text=['Clean Up'], text_colour=VC.Black,
                       font=VC.MainFont, on_click=message.clean, text_offset=(10, 10))
 columniseButton = Panel(VC, 1000, 380, 160, 40, typ='button', text=['Columnise'], text_colour=VC.Black,
-                        font=VC.MainFont, on_click=columnise, text_offset=(10, 10))
+                        font=VC.MainFont, on_click=calculate_key_length, text_offset=(10, 10))
 freqPanel = FreqPanel(VC, 650, 50, 140, 540)
 trigPanel = TrigPanel(VC, 800, 290, 100, 180)
 columnarIocPanel = Panel(VC, 910, 290, 80, 140, on_click=doColumnVis, typ='button', text=['Col. IoC'],
