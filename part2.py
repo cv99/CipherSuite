@@ -62,32 +62,9 @@ def ioc(text: str):
         return 'N/A'
 
 
-def makeGrid(obj):
-    """Sets the View Control Message View mode to Grid."""
-    VC.isGrid = True
-    obj.textColour = VC.Red
-    obj.partner.textColour = VC.Black
-
-
-def makeSmooth(obj):
-    """Sets the View Control Message View mode to Smooth."""
-    VC.isGrid = False
-    obj.textColour = VC.Red
-    obj.partner.textColour = VC.Black
-
-
 def makeAll(obj):
     """Sets the Select mode to All."""
     selectPanel.mode = 'All'
-    message.rendUpdate()
-    obj.colour = VC.Red
-    for o in obj.partners:
-        o.colour = VC.Green
-
-
-def makeLetter(obj):
-    """Sets the Select mode to Letter."""
-    selectPanel.mode = 'Letter'
     message.rendUpdate()
     obj.colour = VC.Red
     for o in obj.partners:
@@ -104,6 +81,13 @@ def makeColumn(obj):
         o.colour = VC.Green
 
 
+def makeGrid(obj):
+    """Sets the View Control Message View mode to Grid."""
+    VC.isGrid = True
+    obj.textColour = VC.Red
+    obj.partner.textColour = VC.Black
+
+
 def makeLC(obj):
     """Sets the Select mode to Letter + Column."""
     VC.selectPanel.mode = 'LC'
@@ -111,6 +95,22 @@ def makeLC(obj):
     obj.colour = VC.Red
     for o in obj.partners:
         o.colour = VC.Green
+
+
+def makeLetter(obj):
+    """Sets the Select mode to Letter."""
+    selectPanel.mode = 'Letter'
+    message.rendUpdate()
+    obj.colour = VC.Red
+    for o in obj.partners:
+        o.colour = VC.Green
+
+
+def makeSmooth(obj):
+    """Sets the View Control Message View mode to Smooth."""
+    VC.isGrid = False
+    obj.textColour = VC.Red
+    obj.partner.textColour = VC.Black
 
 
 def printMessage(obj):
@@ -130,6 +130,11 @@ def swapOrder(obj):
     VC.Screen.fill(VC.Black)
     for o in VC.visualObjects:
         o.render()
+
+
+def undo():
+    print('Undo message!!')
+    pass
 
 
 def updateGridSize(val):
@@ -230,13 +235,19 @@ doAffineButton = Panel(caesarPanel, 10, 50, 120, 39, typ='button', colour=VC.Gre
 doSubstButton = Panel(caesarPanel, 10, 90, 120, 39, typ='button', colour=VC.Green, text=['Substitution'],
                       text_colour=VC.Black, font=VC.MainFont, on_click=message.substitution, text_offset=(10, 10))
 
+pict = pygame.Surface((40, 40))
+pict.fill(VC.Purple)
+
+undoButton = CustomButton(480, 15, pict, undo)
+redoButton = CustomButton(530, 15, pict, undo)
+
 VC.visualObjects = [messagePanel, gridButton, smoothButton, replacePanel, replaceFieldA, replaceFieldB,
                     replaceText, editText, analyseText, replaceButton, messageText, makeUpperCaseButton,
                     makeLowerCaseButton, reverseButton, freqPanel, trigPanel, letterCheckButton, selectPanel,
                     makeAllButton, whichLetterField, makeLetterButton, makeColumnButton, whichColumnField,
                     allowMouseCheck, allowMouseText, makeLCButton, gridSizeField, smoothSizeField,
                     msgScroll, columnarIocPanel, caesarPanel, doCaesarButton, doSubstButton, doAffineButton,
-                    VC, cleanUpButton, columniseButton]
+                    VC, cleanUpButton, columniseButton, undoButton, redoButton]
 
 VC.keyBindings = {
     pygame.K_ESCAPE: [debug, None],

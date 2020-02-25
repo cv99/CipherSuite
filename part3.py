@@ -261,3 +261,24 @@ class TrigPanel:
     def check_motion(self, pos):
         """Standard: Checks for mouse-motion."""
         pass
+
+
+class CustomButton:
+    def __init__(self, x, y, picture, action):
+        self.x = x
+        self.y = y
+        self.width = picture.get_rect()[2]
+        self.height = picture.get_rect()[3]
+        self.picture = picture
+        self.action = action
+
+    def render(self):
+        VC.Screen.blit(self.picture, (self.x, self.y))
+
+    def check_click(self, pos):
+        if self.x + self.width > pos[0] > self.x:
+            if self.y + self.height > pos[1] > self.y:
+                self.action()
+
+    def check_motion(self, pos):
+        pass

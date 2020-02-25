@@ -9,7 +9,7 @@ class Message:
 
     def __init__(self, text: str, x=10, y=70):
         self.rawText = ''.join(
-            [x for x in text.replace('\n', ' ') if x.lower() in alphabet or x in ['', ',', '.', '0', '1', '2']])
+            [x for x in text.replace('\n', ' ') if x.lower() in alphabet or x in otherAllowedChars + list(numbers)])
         self.x = x
         self.y = y
         self.width = 600
@@ -18,6 +18,7 @@ class Message:
         self.displayText = []
         self.displayMask = []
         self.freqAnalysis = []
+        self.rawTextDataBase = [self.rawText]
 
         self.grid = []
         self.gridMask = []
@@ -58,7 +59,7 @@ class Message:
                 o += x
             else:
                 o += letter_map[x.lower()]
-        self.rawText = o
+        self.resetRawText(o)
         print('Affine cipher solve completed on selected text using a, b:', alphabet[a].upper(), alphabet[b].upper())
 
     def basicAnalysis(self, obj):
@@ -116,7 +117,7 @@ class Message:
                 o += self.rawText[n]
             else:
                 o += alphabet[(alphabet.find(x.lower()) - shift) % 26]
-        message.rawText = o
+        self.resetRawText(o)
         print('Caesar completed with key: ', alphabet[shift % 26].upper())
 
     def check_click(self, pos: tuple):
@@ -193,8 +194,7 @@ class Message:
     def clean(self, obj):
         """Removes everything but letters from rawText and updates tne render."""
         obj.touch = None
-        self.rawText = [x for x in self.rawText.upper() if x in ''.join(x.upper() for x in alphabet)]
-        self.rendUpdate()
+        self.resetRawText(''.join([x for x in self.rawText.upper() if x in ''.join(x.upper() for x in alphabet)]))
 
     def columnReorder(self, column: int, placesToDrag: int):
         """Reorders the different columns in the rawText."""
@@ -216,14 +216,12 @@ class Message:
         newColumns = [columns[reLookIndexList[p]] for p in range(VC.gridSize)]
 
         newText = ''
-        for n in range(len(message.rawText) + VC.gridSize): # in final row reordering errors can cause problems.
+        for n in range(len(message.rawText) + VC.gridSize):  # in final row reordering errors can cause problems.
             try:
                 newText += newColumns[n % VC.gridSize][n // VC.gridSize]
             except IndexError:
                 pass
-        message.rawText = newText
-
-        message.rendUpdate()
+        message.resetRawText(newText)
 
     def doReplace(self, replaceFieldA, replaceFieldB):
         """Replaces the given characters."""
@@ -231,8 +229,7 @@ class Message:
         for n, x in enumerate(d):
             if x == VC.BlankLetter:
                 d[n] = self.rawText[n]
-        self.rawText = ''.join(d)
-        self.rendUpdate()
+        self.resetRawText(''.join(d))
 
     def end_scroll(self):
         """What happens when a scrolling event ends."""
@@ -255,8 +252,7 @@ class Message:
                 o += self.rawText[n]
             else:
                 o += x.lower()
-        self.rawText = o
-        self.rendUpdate()
+        self.resetRawText(o)
 
     def makeUpperCase(self, obj):
         """Makes the selected characters uppercase"""
@@ -267,8 +263,7 @@ class Message:
                 o += self.rawText[n]
             else:
                 o += x.upper()
-        self.rawText = o
-        self.rendUpdate()
+        self.resetRawText(o)
 
     def operationText(self, stripNonLetters=False):
         """Returns only the selected character with everything else replaced by VC.BlankLetter"""
@@ -393,7 +388,15 @@ class Message:
             else:
                 o += mask[0]
                 mask = mask[1:]
-        self.rawText = o
+        self.resetRawText(o)
+
+    def resetRawText(self, text: str):
+        """Used to change the raw text for the message.
+
+        Updates the render and the crtl+z database."""
+        if not self.rawText == text:
+            self.rawTextDataBase.append(self.rawText)
+            self.rawText = text
         self.rendUpdate()
 
     def substitution(self, obj):
@@ -441,8 +444,7 @@ class Message:
                     still_to_replace = []
                     still_to_do = []
 
-        self.rawText = mask
-        self.rendUpdate()
+        self.resetRawText(mask)
         print('Operation completed in', int((time.time() - st) * 100) / 100, 'seconds')
 
 
@@ -530,34 +532,3 @@ with open('message.txt', 'r') as ms:
     """Creates the message object."""
     message = Message(ms.read())
     message.parent = VC
-
-englishLetterFrequencies = [
-    ('E', '12.02%'),
-    ('T', '9.10%'),
-    ('A', '8.12%'),
-    ('O', '7.68%'),
-    ('I', '7.31%'),
-    ('N', '6.95%'),
-    ('S', '6.28%'),
-    ('R', '6.02%'),
-    ('H', '5.92%'),
-    ('D', '4.32%'),
-    ('L', '3.98%'),
-    ('U', '2.88%'),
-    ('C', '2.71%'),
-    ('M', '2.61%'),
-    ('F', '2.30%'),
-    ('Y', '2.11%'),
-    ('W', '2.09%'),
-    ('G', '2.03%'),
-    ('P', '1.82%'),
-    ('B', '1.49%'),
-    ('V', '1.11%'),
-    ('K', '0.69%'),
-    ('X', '0.17%'),
-    ('Q', '0.11%'),
-    ('J', '0.10%'),
-    ('Z', '0.07%'),
-    (' ', '')]
-
-sortedELF = [float(x[1][:-1]) for x in sorted(englishLetterFrequencies, key=(lambda x: x[0]))[1:]]
