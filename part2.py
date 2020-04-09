@@ -133,8 +133,25 @@ def swapOrder(obj):
 
 
 def undo():
-    print('Undo message!!')
-    pass
+    print('Undo, depth = ', message.canRedo)
+    try:
+        message.canRedo -= 1
+        message.rawText = message.rawTextDataBase[message.canRedo]
+        message.rendUpdate()
+        print(message.rawText)
+    except IndexError:
+        print('Insufficient actions to undo.')
+        message.canRedo += 1
+
+
+def redo():
+    if not message.canRedo == 0:
+        print('Redo, depth = ', message.canRedo)
+        message.rawText = message.rawTextDataBase[message.canRedo]
+        message.rendUpdate()
+        message.canRedo += 1
+    else:
+        print('No undo to redo. ')
 
 
 def updateGridSize(val):
@@ -150,7 +167,6 @@ def updateSmoothSize(val):
 
 
 messagePanel = Panel(VC, 10, 70, 600, 450)
-messageText = message
 gridButton = Panel(VC, 80, 15, 140, 40, typ='button', text=['Grid'], text_colour=VC.Red,
                    font=VC.MainFont, on_click=makeGrid, text_offset=(50, 10))
 smoothButton = Panel(VC, 300, 15, 140, 40, typ='button', text=['Smooth'], text_colour=VC.Black,
@@ -158,7 +174,6 @@ smoothButton = Panel(VC, 300, 15, 140, 40, typ='button', text=['Smooth'], text_c
 gridButton.partner = smoothButton
 smoothButton.partner = gridButton
 makeSmooth(smoothButton)
-
 analyseText = Panel(VC, 660, 20, 200, 40, typ='text', text=['Analyse'],
                     text_colour=VC.White, font=VC.MainFont)
 editText = Panel(VC, 1010, 20, 200, 40, typ='text', text=['Edit'],
@@ -183,7 +198,7 @@ cleanUpButton = Panel(VC, 1000, 330, 160, 40, typ='button', text=['Clean Up'], t
                       font=VC.MainFont, on_click=message.clean, text_offset=(10, 10))
 columniseButton = Panel(VC, 1000, 380, 160, 40, typ='button', text=['Columnise'], text_colour=VC.Black,
                         font=VC.MainFont, on_click=calculate_key_length, text_offset=(10, 10))
-freqPanel = FreqPanel(VC, 650, 50, 140, 540)
+freqPanel = FreqPanel(VC, 650, 50, 140, 515)
 trigPanel = TrigPanel(VC, 800, 290, 100, 180)
 columnarIocPanel = Panel(VC, 910, 290, 80, 140, on_click=doColumnVis, typ='button', text=['Col. IoC'],
                          text_colour=VC.Black, font=VC.SmallFont, colour=VC.White)
@@ -207,26 +222,19 @@ makeColumnButton = Panel(selectPanel, 10, 110, 90, 40, typ='button', colour=VC.G
                          text_colour=VC.Black, font=VC.MainFont, on_click=makeColumn, text_offset=(10, 10))
 makeLCButton = Panel(selectPanel, 150, 110, 35, 40, typ='button', colour=VC.Green, text=['L+C'],
                      text_colour=VC.Black, font=VC.MainFont, on_click=makeLC, text_offset=(3, 10))
-
 makeAllButton.partners = [makeLetterButton, makeColumnButton, makeLCButton]
 makeLetterButton.partners = [makeAllButton, makeColumnButton, makeLCButton]
 makeColumnButton.partners = [makeAllButton, makeLetterButton, makeLCButton]
 makeLCButton.partners = [makeAllButton, makeLetterButton, makeColumnButton]
-
 whichLetterField = TextField(selectPanel, 120, 65, 30, 30)
 VC.whichLetterField = whichLetterField
-
 whichColumnField = TextField(selectPanel, 110, 115, 30, 30)
 VC.whichColumnField = whichColumnField
-
 allowMouseCheck = CheckBox(selectPanel, 130, 155)
 message.allowMouseCheck = allowMouseCheck
-
 allowMouseText = Panel(selectPanel, 10, 160, 200, 40, typ='text', text=['Set by hovering:'],
                        text_colour=VC.Black, font=VC.VerySmallFont)
-
 msgScroll = ScrollBar(message, 303, 0, 150, 3, VC.Blue)
-
 caesarPanel = Panel(VC, 1000, 430, 160, 140)
 doCaesarButton = Panel(caesarPanel, 10, 10, 120, 39, typ='button', colour=VC.Green, text=['Caesar'],
                        text_colour=VC.Black, font=VC.MainFont, on_click=message.caesar, text_offset=(10, 10))
@@ -237,12 +245,14 @@ doSubstButton = Panel(caesarPanel, 10, 90, 120, 39, typ='button', colour=VC.Gree
 
 pict = pygame.Surface((40, 40))
 pict.fill(VC.Purple)
-
+undoIcon = pygame.transform.scale(pygame.image.load('undo.png'), (30, 30))
+pict.blit(undoIcon, (5, 0))
 undoButton = CustomButton(480, 15, pict, undo)
-redoButton = CustomButton(530, 15, pict, undo)
+pict = pygame.transform.flip(pict, True, False)
+redoButton = CustomButton(530, 15, pict, redo)
 
 VC.visualObjects = [messagePanel, gridButton, smoothButton, replacePanel, replaceFieldA, replaceFieldB,
-                    replaceText, editText, analyseText, replaceButton, messageText, makeUpperCaseButton,
+                    replaceText, editText, analyseText, replaceButton, message, makeUpperCaseButton,
                     makeLowerCaseButton, reverseButton, freqPanel, trigPanel, letterCheckButton, selectPanel,
                     makeAllButton, whichLetterField, makeLetterButton, makeColumnButton, whichColumnField,
                     allowMouseCheck, allowMouseText, makeLCButton, gridSizeField, smoothSizeField,
@@ -268,15 +278,15 @@ VC.keyBindings = {
 VC.keyBindingHints = [
     'Escape: Prints debug information.',
     'A: Sets the select mode to All.',
-    'L: Sets the select mode to Letter(s).',
+    'B: Switches the frequency panel between alphabetical mode and frequency-ordered mode.',
     'C: Sets the select mode to Column.',
-    'K: Sets the select mode to Letter + Column.',
-    'U: Makes the selected letters uppercase.',
     'I: Makes the selected letters lowercase.',
+    'K: Sets the select mode to Letter + Column.',
+    'L: Sets the select mode to Letter(s).',
+    'P: Prints the message rawText (and the selected text if applicable) to the console.',
     'R: Reverses the selected letters',
+    'U: Makes the selected letters uppercase.',
     '1: Applies a frequency-based caesar solve to the selected letters.',
     '2: Applies a frequency-based affine solve to the selected letters.',
     '3: Applies a quadgram-based substitution solve to the selected letters.',
-    'B: Switches the frequency panel between alphabetical mode and frequency-ordered mode.',
-    'P: Prints the message rawText (and the selected text if applicable) to the console.',
 ]

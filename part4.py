@@ -18,6 +18,7 @@ class Message:
         self.displayText = []
         self.displayMask = []
         self.freqAnalysis = []
+        self.canRedo = -1
         self.rawTextDataBase = [self.rawText]
 
         self.grid = []
