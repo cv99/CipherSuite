@@ -25,6 +25,7 @@ class VC:
     Red = (255, 0, 0)
     Blue = (0, 0, 255)
     Purple = (117, 12, 150)
+    WindowsBlueScreenOfDeath = (160, 240, 120)
     alphaOrder = False
     isGrid = True
     selectPanel = None
@@ -58,6 +59,20 @@ class VC:
         for n, x in enumerate(cls.keyBindingHints):
             plq = cls.SmallFont.render(x, 0, cls.Orange)
             cls.Screen.blit(plq, (10, (790 - (20 * len(cls.keyBindingHints))) + (n * 20)))
+
+    @classmethod
+    def simplePump(cls):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+        cls.Screen.fill(cls.WindowsBlueScreenOfDeath)
+        plq = cls.MainFont.render('A solve is in operation. Refer to the console. Press the close button in the '
+                                  'corner to interrupt it.', 0, cls.Black)
+        cls.Screen.blit(plq, (50, 50))
+        plq = cls.MainFont.render('If the console is waiting for an input, it will not work immediately.', 0, cls.Black)
+        cls.Screen.blit(plq, (50, 100))
+        pygame.display.flip()
+        return True
 
 
 def input2(obj):
@@ -102,6 +117,19 @@ def plural(n: int):
         return ''
     else:
         return 's'
+
+
+def factorise(n: int):
+    x = 2
+    result = []
+    while x < n:
+        if n // x == n / x:
+            result.append(x)
+            n /= x
+        else:
+            x += 1
+    result.append(int(n))
+    return result
 
 
 alphabet = 'abcdefghijklmnopqrstuvwxyz'

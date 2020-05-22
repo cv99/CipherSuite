@@ -235,13 +235,16 @@ message.allowMouseCheck = allowMouseCheck
 allowMouseText = Panel(selectPanel, 10, 160, 200, 40, typ='text', text=['Set by hovering:'],
                        text_colour=VC.Black, font=VC.VerySmallFont)
 msgScroll = ScrollBar(message, 303, 0, 150, 3, VC.Blue)
-caesarPanel = Panel(VC, 1000, 430, 160, 140)
+caesarPanel = Panel(VC, 1000, 430, 160, 180)
 doCaesarButton = Panel(caesarPanel, 10, 10, 120, 39, typ='button', colour=VC.Green, text=['Caesar'],
                        text_colour=VC.Black, font=VC.MainFont, on_click=message.caesar, text_offset=(10, 10))
 doAffineButton = Panel(caesarPanel, 10, 50, 120, 39, typ='button', colour=VC.Green, text=['Affine'],
                        text_colour=VC.Black, font=VC.MainFont, on_click=message.affine, text_offset=(10, 10))
 doSubstButton = Panel(caesarPanel, 10, 90, 120, 39, typ='button', colour=VC.Green, text=['Substitution'],
                       text_colour=VC.Black, font=VC.MainFont, on_click=message.substitution, text_offset=(10, 10))
+doTransButton = Panel(caesarPanel, 10, 130, 120, 39, typ='button', colour=VC.Green, text=['Transposition'],
+                      text_colour=VC.Black, font=VC.MainFont, on_click=message.transposition, text_offset=(10, 10))
+
 
 pict = pygame.Surface((40, 40))
 pict.fill(VC.Purple)
@@ -257,7 +260,7 @@ VC.visualObjects = [messagePanel, gridButton, smoothButton, replacePanel, replac
                     makeAllButton, whichLetterField, makeLetterButton, makeColumnButton, whichColumnField,
                     allowMouseCheck, allowMouseText, makeLCButton, gridSizeField, smoothSizeField,
                     msgScroll, columnarIocPanel, caesarPanel, doCaesarButton, doSubstButton, doAffineButton,
-                    VC, cleanUpButton, columniseButton, undoButton, redoButton]
+                    VC, cleanUpButton, columniseButton, undoButton, redoButton, doTransButton]
 
 VC.keyBindings = {
     pygame.K_ESCAPE: [debug, None],
