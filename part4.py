@@ -451,22 +451,24 @@ class Message:
         self.resetRawText(mask)
         print('Operation completed in', int((time.time() - st) * 100) / 100, 'seconds')
 
-    def transposition(self, x):
+    def transposition(self, obj):
+        VC.simplePump()  # Prevents 'not responding'
+        VC.simplePump()
+        obj.blank = None
+
+        print('Loading dictionary...')
         qg = open('qgrams.txt', 'r')
-        qg = qg.readlines()
+        qg = list(qg.readlines())
         for n in range(len(qg)):
             qg[n] = qg[n].split()
         qg = dict(qg)
 
-        def transpositionSolve(message):
-            VC.simplePump()  # Prevents 'not responding'
-            VC.simplePump()
-
-            def score(string):
+        def transpositionSolve(text):
+            def score_2(string):
                 string = string.upper()
                 s = 0
-                for n in range(len(string) - 3):
-                    snip = string[n:n + 4]
+                for counter in range(len(string) - 3):
+                    snip = string[counter:counter + 4]
                     try:
                         s += math.log10(int(qg[snip]))
                     except KeyError:
@@ -474,40 +476,47 @@ class Message:
                 return s
 
             def key_score(k):
-                text = reArrange(k)
-                return score(text)
+                shuffle = reArrange(k)
+                return score_2(shuffle)
 
             def reArrange(k):
-                blocks = [message[x:x + keylength] for x in range(0, len(message), keylength)]
-                for n, b in enumerate(blocks):
+                blocks = [text[counter:counter + keylength] for counter in range(0, len(text), keylength)]
+                for blockNumber, b in enumerate(blocks):
                     if not len(b) < keylength:
                         c = ''
                         for count in k:
                             c += b[count]
-                            blocks[n] = c
+                            blocks[blockNumber] = c
                 return ''.join(blocks)
 
-            def permute(k, n, keylength, pOfSplice=0.5):
+            def visualise():
+                plq = pygame.Surface((len(population) + 40, 400))
+                plq.fill(VC.Black)
+                for count, value in enumerate(scores):
+                    plq.set_at((count + 20, int(value/100) + 20), VC.White)
+                return plq
+
+            def permute(k, maxChanges, pOfSplice=0.5):
+                lengthOfKey = len(k)
                 v2 = k[:]
-                for _ in range(random.randint(0, n)):
+                for _ in range(random.randint(0, maxChanges)):
                     flip = random.random()
                     if flip > pOfSplice:
-                        a = random.randint(0, keylength - 1)
-                        b = random.randint(0, keylength - 1)
+                        a = random.randint(0, lengthOfKey - 1)
+                        b = random.randint(0, lengthOfKey - 1)
                         v2[a], v2[b] = v2[b], v2[a]
                     else:
                         while True:
                             # repeat until random selects a valid splice
-                            a = random.randint(0, keylength - 1)
-                            b = random.randint(0, keylength - 1)
+                            a = random.randint(0, lengthOfKey - 1)
+                            b = random.randint(0, lengthOfKey - 1)
                             if a < b:
                                 splice = v2[a:b]
                                 return random.choice(
                                     [v2[0:a] + splice + v2[b:], splice + v2[0:a] + v2[b:], v2[0:a] + v2[b:] + splice])
                 return v2
 
-            alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-            length = len([x for x in message if x.upper() in alphabet])
+            length = len([char for char in text if char.lower() in alphabet])
             print('Message length:', length)
             print('Factors:', factorise(length))
             keylength = int(input('Keylength to try?'))
@@ -523,26 +532,35 @@ class Message:
             previousBest = 0
             timeSincePreviousBest = 0
             rateOfRandomnessIncrease = 7  # lower is faster
-            randomness = randomnessBaseline
             pOfSlice = 0.5
+            scores = []
             print('Beginning Solve, with parameters:')
             print('Population Size:', populationSize)
             print('Baseline permutations:', randomnessBaseline)
             print('Generations to increase randomness:', rateOfRandomnessIncrease)
             print('Endpoint generations without improvement:', randomnessEndpoint)
             print()
+            if input('Do you wish to change any of these parameters? (y/n)').upper() == 'Y':
+                populationSize = int(input('Population Size?'))
+                randomnessBaseline = int(input('Randomness Baseline?'))
+                rateOfRandomnessIncrease = int(input('After how many generations should r increase?'))
+                randomnessEndpoint = int(input('At what r should the program give up?'))
+
+            print()
             print('Press the red X at any time to end the solve.')
+            randomness = randomnessBaseline
             running = True
             while running:
-                population = population + [permute(x, randomness, keylength, pOfSplice=pOfSlice) for x in population]
+                population = population + [permute(key, randomness, pOfSplice=pOfSlice) for key in population]
                 population.sort(reverse=True, key=key_score)
                 population = population[0:populationSize]
 
                 print('Gen', gen_Number,
                       reArrange(population[0])[0:20], 'r', randomness, 'score',
                       int(key_score(population[0])), 'key',
-                      '.'.join([str(x) for x in population[0]]))
-                running = VC.simplePump()  # Prevents 'not responding'
+                      '.'.join([str(char) for char in population[0]]))
+                scores = [key_score(key) for key in population]
+                running = VC.simplePump(img=visualise(), pos=(20, 150))  # Prevents 'not responding'
 
                 gen_Number += 1
                 if previousBest == key_score(population[0]):
@@ -554,8 +572,11 @@ class Message:
                     previousBest = key_score(population[0])
                     randomness = randomnessBaseline
 
+                if timeSincePreviousBest > randomnessEndpoint:
+                    running = False
+
             print('Best Guess:')
-            print('Key:', '.'.join([str(x) for x in population[0]]))
+            print('Key:', '.'.join([str(num) for num in population[0]]))
             print()
             print(reArrange(population[0]))
             return reArrange(population[0])
@@ -604,8 +625,7 @@ class ScrollBar:
         """Renders the scroll-bar."""
         pygame.draw.rect(VC.Screen, self.colour, pygame.Rect(sum([o.x for o in self.parents()]) + self.x,
                                                              sum([o.y for o in self.parents()]) + self.y + self.shift,
-                                                             self.width, self.size),
-                         0)
+                                                             self.width, self.size), 0)
 
     def check_motion(self, pos):
         """Standard: Checks a mouse-motion."""

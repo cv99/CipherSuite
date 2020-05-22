@@ -61,7 +61,7 @@ class VC:
             cls.Screen.blit(plq, (10, (790 - (20 * len(cls.keyBindingHints))) + (n * 20)))
 
     @classmethod
-    def simplePump(cls):
+    def simplePump(cls, img=None, pos=None):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
@@ -69,8 +69,13 @@ class VC:
         plq = cls.MainFont.render('A solve is in operation. Refer to the console. Press the close button in the '
                                   'corner to interrupt it.', 0, cls.Black)
         cls.Screen.blit(plq, (50, 50))
-        plq = cls.MainFont.render('If the console is waiting for an input, it will not work immediately.', 0, cls.Black)
+        plq = cls.MainFont.render('If the console is waiting for an input, it will not work until you give it one.', 0,
+                                  cls.Black)
         cls.Screen.blit(plq, (50, 100))
+
+        if img is not None:
+            cls.Screen.blit(img, pos)
+
         pygame.display.flip()
         return True
 
