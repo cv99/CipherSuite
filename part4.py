@@ -577,8 +577,8 @@ class Message:
 
             print('Best Guess:')
             print('Key:', '.'.join([str(num) for num in population[0]]))
-            print()
             print(reArrange(population[0]))
+            print()
             return reArrange(population[0])
 
         print('Beginning Transposition ---')
