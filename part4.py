@@ -291,7 +291,7 @@ class Message:
                 o = ''
                 for n, p in enumerate(return_onto):
                     if not VC.whichColumnField.text[0] == '':
-                        if n % VC.gridSize == int(VC.whichColumnField.text):
+                        if n % VC.gridSize == int(VC.whichColumnField.text[0]):
                             o += p
                         else:
                             o += VC.BlankLetter
@@ -589,8 +589,7 @@ class Message:
                 t += self.rawText[n]
             else:
                 t += x
-        self.rawText = t
-        self.rendUpdate()
+        self.resetRawText(t)
 
 
 class ScrollBar:
