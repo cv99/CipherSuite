@@ -60,11 +60,12 @@ def permute(textIn: str, _changes_min=1, _changes_max=5, _max_move_distance=6):
     # Final checks
     # Spaces Next to each other
     for i in range(len(_newtext) - 1):
-        if _newtext[i] == _newtext[i + 1]:
+        if _newtext[i] == _newtext[i + 1] == ' ':
             _passed = False
     # Spaces at ends
     if _newtext[0] == ' ' or _newtext[len(_newtext) - 1] == ' ':
         _passed = False
+
 
     # Passed?
     if _passed:
@@ -90,14 +91,19 @@ def score(potentialWord):
         return 0 + len(potentialWord)
 
 
-def scoreText(text):
-    return sum([score(x) for x in text.split(' ')])  # len(text.split(' ')
+def initialAdd():
+    blockSize = len(text) // noOfSpaces
+    endOfBlocks = blockSize * noOfSpaces
+    return ' '.join([text[y:y + blockSize] for y in range(0, endOfBlocks, blockSize)]) + text[endOfBlocks:]
+
+
+def scoreText(t):
+    return sum([score(word) for word in t.split(' ')])  # len(text.split(' ')
 
 
 populationSize = 100
-# Add spaces to text
-noOfSpaces = 7
-text = ' '.join([x for x in text[:noOfSpaces+1]]) + text[noOfSpaces+1:]
+noOfSpaces = 70
+text = initialAdd()
 print(text)
 
 population = [text for _ in range(populationSize // 2)]
