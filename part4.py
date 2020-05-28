@@ -396,9 +396,16 @@ class Message:
         """Used to change the raw text for the message.
 
         Updates the render and the crtl+z database."""
-        if not self.rawText == text:
+        reMask = ''
+        for n, char in enumerate(text):
+            if char == VC.BlankLetter:
+                reMask += message.rawText[n]
+            else:
+                reMask += char
+
+        if not self.rawText == reMask:
             self.rawTextDataBase.append(self.rawText)
-            self.rawText = text
+            self.rawText = reMask
         self.rendUpdate()
 
     def substitution(self, obj):

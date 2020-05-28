@@ -37,6 +37,33 @@ class VC:
     touch = None
     doColumnVis = None
     columnarIocPanel = None
+    morseDict = {
+        '.-': 'a',
+        '-...': 'b',
+        '-.-.': 'c',
+        '-..': 'd',
+        '.': 'e',
+        '..-.': 'f',
+        '--.': 'g',
+        '....': 'h',
+        '..': 'i',
+        '.---': 'j',
+        '-.-': 'k',
+        '.-..': 'l',
+        '--': 'm',
+        '-.': 'n',
+        '---': 'o',
+        '.--.': 'p',
+        '--.-': 'q',
+        '.-.': 'r',
+        '...': 's',
+        '-': 't',
+        '..-': 'u',
+        '...-': 'v',
+        '.--': 'w',
+        '-..-': 'x',
+        '-.--': 'y',
+        '--..': 'z'}
 
     @classmethod
     def check_click(cls, pos: tuple):
@@ -139,7 +166,7 @@ def factorise(n: int):
 
 alphabet = 'abcdefghijklmnopqrstuvwxyz'
 numbers = '1234567890'
-otherAllowedChars = ['', ',', '.', '-', '0', '1', '2']
+otherAllowedChars = ['', ',', '.', '-', '0', '1', '2', '/', ' ']
 
 englishLetterFrequencies = [
     ('E', '12.02%'),
