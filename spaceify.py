@@ -3,7 +3,7 @@ import random
 text = 'thebombingraidonvemorkwascarriedoutduringdaylightonnovembersixteenththeattacksquadronconsistingofthirteenplanessplitintotwogroupseachmakingtworunsonthetargetswhichappearedtobethenorskhydropowerstationandthenitrateplantthreemilestotheeasttheattackwasnotforeseennorwasitinterceptedbyaircoverandalloftheattackingaircraftseemtohavereturnedfromthemissioneyewitnessesstatethatintermittentcloudcoverappearedtodisrupttheattackbutthemajorityoftheexplosivesaroundthirtytonsweredroppedwithveryhighaccuracyonthenitrateplantonlytwotothreetonshitthepowerstationandthereinforcedstructurewithstoodtheworstoftheassaultthebombsfailedtodamagetherebuiltdeuteriumelectrolysisfacilityandournewstocksofheavywaterwereprotectedbythesevenstoreysofreinforcedconcreteabovehoweverthepowerplantitselfhasbeendamagedandthissecondraidontheplantraisesthepossibilitythatourenemieshaveagentsworkingwithinitindiscussionwithofficialsfromdiealchemistengroupithasbeendecidedthatthefacilityshouldbeshutdownexistingstocksofheavywaterandpotassiumhydroxidewillbeshippedtotheirlaboratoriesandmanufacturingfacilitiesingermanyforfurtherenrichmentandexperimentationgiventheriskoflocalespionagewewillneedtosignificantlyenhancesecurityforthisoperationfinallyweshouldnotethattheattackkilledtwentyonenorwegianciviliansthisisvaluablepropagandaandouragentsaredoingtheirbesthereandinlondontoensurethatthenorwegianpopulationunderstandswhoistoblamefortheseneedlessdeaths'
 
 
-def permute(textIn: str, _changes_min=1, _changes_max=5, _max_move_distance=6):
+def permute(textIn: str, _changes_min=1, _changes_max=10, _max_move_distance=10):
     # _ means variable is temp and shouldn't be referenced outside this function
 
     # Count Spaces
@@ -15,10 +15,7 @@ def permute(textIn: str, _changes_min=1, _changes_max=5, _max_move_distance=6):
             _spaces += 1
 
     # Number of spaces to move
-    try:
-        _moving = random.randrange(_changes_min, _changes_max)
-    except RecursionError:  # Exception added 27/05/20 for debug
-        print(textIn)
+    _moving = random.randrange(_changes_min, _changes_max)
 
     # Get rid of all spaces
     _newtext = ''
@@ -66,9 +63,8 @@ def permute(textIn: str, _changes_min=1, _changes_max=5, _max_move_distance=6):
     if _newtext[0] == ' ' or _newtext[len(_newtext) - 1] == ' ':
         _passed = False
 
-
     # Passed?
-    if _passed:
+    if True:  # if _passed:
         # Return text
         return _newtext
     else:
@@ -102,7 +98,7 @@ def scoreText(t):
 
 
 populationSize = 100
-noOfSpaces = 70
+noOfSpaces = 280
 text = initialAdd()
 print(text)
 
@@ -119,4 +115,3 @@ try:
         generationCount += 1
 except KeyboardInterrupt:
     print(population[0])
-
