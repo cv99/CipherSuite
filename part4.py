@@ -310,7 +310,10 @@ class Message:
                         o += p
                 return o
             if VC.selectPanel.mode == 'Word':
-                index = int(VC.whatIndexField.text[0])
+                try:
+                    index = int(VC.whatIndexField.text[0])
+                except ValueError:
+                    index = 0
                 separator = VC.whatSeparatorField.text[0]
                 count = 0
                 o = ''

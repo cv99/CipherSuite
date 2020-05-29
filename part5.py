@@ -37,7 +37,8 @@ class VC:
     touch = None
     doColumnVis = None
     columnarIocPanel = None
-    whichSeparator = None
+    whatIndexField = None
+    whatSeparatorField = None
     wordIndex = 3
     wordSeparator = '/'
     morseDict = {

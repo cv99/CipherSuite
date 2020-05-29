@@ -122,8 +122,10 @@ def makeWord(obj):
         o.colour = VC.Green
 
 
-def morseDecrypt(text, wordSeparator='/', letterSeparator=' '):
+def morseDecrypt(text, wordSeparator=None, letterSeparator=' '):
     output = ''
+    if wordSeparator is None:
+        wordSeparator = VC.whatSeparatorField.text[0]
     for word in text.split(wordSeparator):
         for letter in word.split(letterSeparator):
             try:
@@ -259,7 +261,7 @@ whichLetterField = TextField(selectPanel, 120, 65, 30, 30)
 VC.whichLetterField = whichLetterField
 whichColumnField = TextField(selectPanel, 110, 115, 30, 30)
 VC.whichColumnField = whichColumnField
-whatSeparatorField = TextField(selectPanel, 75, 200, 30, 30)
+whatSeparatorField = TextField(selectPanel, 75, 200, 30, 30, default_text='/')
 VC.whatSeparatorField = whatSeparatorField
 whatIndexField = TextField(selectPanel, 125, 200, 30, 30)
 VC.whatIndexField = whatIndexField
