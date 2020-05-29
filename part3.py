@@ -86,7 +86,8 @@ class Panel:
 
 # noinspection PyShadowingNames
 class TextField:
-    def __init__(self, parent, x, y, length, h, default_text=None, text_color=None, text_offset=(5, 5), onReturn=None):
+    def __init__(self, parent, x, y, length, h, default_text=None, text_color=None, text_offset=(5, 5), onReturn=None,
+                 doNotLeaveBlank=False):
         """Creates a new text field. Used for text entry."""
         self.parent = parent
         self.x = x
@@ -94,6 +95,8 @@ class TextField:
         self.length = length
         self.height = h
         self.font = VC.MainFont
+        self.default_text = default_text
+        self.doNotLeaveBlank = doNotLeaveBlank
         if default_text is None:
             default_text = ['']
         self.onReturn = onReturn
@@ -149,6 +152,8 @@ class TextField:
                 sum([p.y for p in self.parents()]) + self.height > pos[1] > sum([p.y for p in self.parents()]):
             self.text = [input2(self)]
             self.textInputted = copy.deepcopy(self.text)
+            if self.doNotLeaveBlank and self.text == ['']:
+                self.text = self.default_text
             message.rendUpdate()
         if self.onReturn is not None:
             self.onReturn(self.text)

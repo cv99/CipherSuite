@@ -211,7 +211,7 @@ replaceText = Panel(replacePanel, 20, 20, 100, 100, typ='text', text=['Replace:'
                     text_colour=VC.Black, font=VC.MainFont)
 replaceFieldA = TextField(replacePanel, 110, 20, 30, 30, default_text=['A'])
 replaceFieldB = TextField(replacePanel, 110, 60, 30, 30, default_text=['b'])
-gridSizeField = TextField(VC, 20, 20, 40, 30, default_text=['6'], onReturn=updateGridSize)
+gridSizeField = TextField(VC, 20, 20, 40, 30, default_text=['6'], onReturn=updateGridSize, doNotLeaveBlank=True)
 VC.gridSizeField = gridSizeField
 smoothSizeField = TextField(VC, 240, 20, 40, 30, default_text=['56'], onReturn=updateSmoothSize)
 replaceButton = Panel(replacePanel, 30, 80, 30, 30, typ='button', text=['Go'], text_colour=VC.Black,

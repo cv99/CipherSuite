@@ -1,4 +1,6 @@
 import pygame
+from sys import platform
+print('Welcome to Ciphersuite, running on:', platform)
 
 pygame.init()
 pygame.font.init()
@@ -9,9 +11,14 @@ class VC:
     displayDims = (1200, 800)
     Screen = pygame.display.set_mode(displayDims)
     pygame.display.set_caption('CipherSuite 1.0')
-    MainFont = pygame.font.SysFont('Calibri', 20, False)
-    SmallFont = pygame.font.SysFont('Courier New', 16, False)
-    VerySmallFont = pygame.font.SysFont('Calibri', 16, False)
+    if platform == 'darwin':  # Fonts for Mac OS
+        MainFont = pygame.font.SysFont('calibrittf', 20, False)
+        SmallFont = pygame.font.SysFont('couriernewttf', 16, False)
+        VerySmallFont = pygame.font.SysFont('calibrittf', 16, False)
+    else:  # Fonts for windows 10,  # platform == 'win32':
+        MainFont = pygame.font.SysFont('Calibri', 20, False)
+        SmallFont = pygame.font.SysFont('Courier New', 16, False)
+        VerySmallFont = pygame.font.SysFont('Calibri', 16, False)
     BlankLetter = '_'
     lineWidth = 20
     lineSize = 56
