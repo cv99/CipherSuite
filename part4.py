@@ -309,6 +309,22 @@ class Message:
                     else:
                         o += p
                 return o
+            if VC.selectPanel.mode == 'Word':
+                index = int(VC.whatIndexField.text[0])
+                separator = VC.whatSeparatorField.text[0]
+                count = 0
+                o = ''
+                for char in self.rawText:
+                    if char == separator:
+                        count += 1
+                        o += VC.BlankLetter
+                    else:
+                        if count == index:
+                            o += char
+                        else:
+                            o += VC.BlankLetter
+                return o
+
         return self.rawText
 
     def render(self):

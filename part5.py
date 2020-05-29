@@ -37,6 +37,9 @@ class VC:
     touch = None
     doColumnVis = None
     columnarIocPanel = None
+    whichSeparator = None
+    wordIndex = 3
+    wordSeparator = '/'
     morseDict = {
         '.-': 'a',
         '-...': 'b',
@@ -119,6 +122,10 @@ def input2(obj):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     r = False
+                elif event.key == pygame.K_SLASH:
+                    t += '/'
+                elif event.key == pygame.K_SPACE:
+                    t += ' '
                 elif pressed[pygame.K_LSHIFT] or pressed[pygame.K_RSHIFT]:
                     try:
                         t += alphabet.upper()[event.key - 97]

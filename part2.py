@@ -113,6 +113,15 @@ def makeSmooth(obj):
     obj.partner.textColour = VC.Black
 
 
+def makeWord(obj):
+    """Sets the Select mode to Word."""
+    selectPanel.mode = 'Word'
+    message.rendUpdate()
+    obj.colour = VC.Red
+    for o in obj.partners:
+        o.colour = VC.Green
+
+
 def morseDecrypt(text, wordSeparator='/', letterSeparator=' '):
     output = ''
     for word in text.split(wordSeparator):
@@ -216,17 +225,17 @@ cleanUpButton = Panel(VC, 1000, 330, 160, 40, typ='button', text=['Clean Up'], t
 columniseButton = Panel(VC, 1000, 380, 160, 40, typ='button', text=['Columnise'], text_colour=VC.Black,
                         font=VC.MainFont, on_click=calculate_key_length, text_offset=(10, 10))
 freqPanel = FreqPanel(VC, 650, 50, 140, 515)
-trigPanel = TrigPanel(VC, 800, 290, 100, 180)
-columnarIocPanel = Panel(VC, 910, 290, 80, 140, on_click=doColumnVis, typ='button', text=['Col. IoC'],
+trigPanel = TrigPanel(VC, 800, 350, 100, 180)
+columnarIocPanel = Panel(VC, 910, 350, 80, 140, on_click=doColumnVis, typ='button', text=['Col. IoC'],
                          text_colour=VC.Black, font=VC.SmallFont, colour=VC.White)
 VC.columnarIocPanel = columnarIocPanel
 VC.doColumnVis = doColumnVis
 doColumnVis(columnarIocPanel)
 message.freqObjectLink = freqPanel
 message.trigObjectLink = trigPanel
-letterCheckButton = Panel(VC, 800, 240, 130, 40, typ='button', text=['Check letters'], text_colour=VC.Black,
+letterCheckButton = Panel(VC, 800, 300, 130, 40, typ='button', text=['Check letters'], text_colour=VC.Black,
                           font=VC.MainFont, on_click=message.basicAnalysis, text_offset=(10, 10))
-selectPanel = Panel(VC, 800, 50, 190, 180)
+selectPanel = Panel(VC, 800, 50, 190, 240)
 selectPanel.mode = 'All'
 selectPanel.letter = 'e'
 VC.selectPanel = selectPanel
@@ -239,18 +248,29 @@ makeColumnButton = Panel(selectPanel, 10, 110, 90, 40, typ='button', colour=VC.G
                          text_colour=VC.Black, font=VC.MainFont, on_click=makeColumn, text_offset=(10, 10))
 makeLCButton = Panel(selectPanel, 150, 110, 35, 40, typ='button', colour=VC.Green, text=['L+C'],
                      text_colour=VC.Black, font=VC.MainFont, on_click=makeLC, text_offset=(3, 10))
-makeAllButton.partners = [makeLetterButton, makeColumnButton, makeLCButton]
-makeLetterButton.partners = [makeAllButton, makeColumnButton, makeLCButton]
-makeColumnButton.partners = [makeAllButton, makeLetterButton, makeLCButton]
-makeLCButton.partners = [makeAllButton, makeLetterButton, makeColumnButton]
+makeWordButton = Panel(selectPanel, 10, 190, 60, 40, typ='button', colour=VC.Green, text=['Word:'],
+                       text_colour=VC.Black, font=VC.MainFont, on_click=makeWord, text_offset=(3, 10))
+makeAllButton.partners = [makeLetterButton, makeColumnButton, makeLCButton, makeWordButton]
+makeLetterButton.partners = [makeAllButton, makeColumnButton, makeLCButton, makeWordButton]
+makeColumnButton.partners = [makeAllButton, makeLetterButton, makeLCButton, makeWordButton]
+makeLCButton.partners = [makeAllButton, makeLetterButton, makeColumnButton, makeWordButton]
+makeWordButton.partners = [makeAllButton, makeLetterButton, makeColumnButton, makeLCButton]
 whichLetterField = TextField(selectPanel, 120, 65, 30, 30)
 VC.whichLetterField = whichLetterField
 whichColumnField = TextField(selectPanel, 110, 115, 30, 30)
 VC.whichColumnField = whichColumnField
+whatSeparatorField = TextField(selectPanel, 75, 200, 30, 30)
+VC.whatSeparatorField = whatSeparatorField
+whatIndexField = TextField(selectPanel, 125, 200, 30, 30)
+VC.whatIndexField = whatIndexField
+
+
 allowMouseCheck = CheckBox(selectPanel, 130, 155)
 message.allowMouseCheck = allowMouseCheck
 allowMouseText = Panel(selectPanel, 10, 160, 200, 40, typ='text', text=['Set by hovering:'],
                        text_colour=VC.Black, font=VC.VerySmallFont)
+wordInfoText = Panel(selectPanel, 75, 185, 0, 0, typ='text', text=['Separator-Index'],
+                     text_colour=VC.Black, font=VC.VerySmallFont)
 msgScroll = ScrollBar(message, 303, 0, 150, 3, VC.Blue)
 caesarPanel = Panel(VC, 1000, 430, 160, 220)
 doCaesarButton = Panel(caesarPanel, 10, 10, 120, 39, typ='button', colour=VC.Green, text=['Caesar'],
@@ -263,7 +283,6 @@ doTransButton = Panel(caesarPanel, 10, 130, 120, 39, typ='button', colour=VC.Gre
                       text_colour=VC.Black, font=VC.MainFont, on_click=message.transposition, text_offset=(10, 10))
 doMorseButton = Panel(caesarPanel, 10, 170, 120, 39, typ='button', colour=VC.Green, text=['De-Morse'],
                       text_colour=VC.Black, font=VC.MainFont, on_click=morseDo, text_offset=(10, 10))
-
 
 pict = pygame.Surface((40, 40))
 pict.fill(VC.Purple)
@@ -279,7 +298,8 @@ VC.visualObjects = [messagePanel, gridButton, smoothButton, replacePanel, replac
                     makeAllButton, whichLetterField, makeLetterButton, makeColumnButton, whichColumnField,
                     allowMouseCheck, allowMouseText, makeLCButton, gridSizeField, smoothSizeField,
                     msgScroll, columnarIocPanel, caesarPanel, doCaesarButton, doSubstButton, doAffineButton,
-                    VC, cleanUpButton, columniseButton, undoButton, redoButton, doTransButton, doMorseButton]
+                    VC, cleanUpButton, columniseButton, undoButton, redoButton, doTransButton, doMorseButton,
+                    makeWordButton, wordInfoText, whatSeparatorField, whatIndexField]
 
 VC.keyBindings = {
     pygame.K_ESCAPE: [debug, None],
