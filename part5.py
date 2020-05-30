@@ -15,7 +15,7 @@ class VC:
         MainFont = pygame.font.SysFont('calibrittf', 20, False)
         SmallFont = pygame.font.SysFont('couriernewttf', 16, False)
         VerySmallFont = pygame.font.SysFont('calibrittf', 16, False)
-    else:  # Fonts for windows 10,  # platform == 'win32':
+    else:  # Fonts for windows 10 et al
         MainFont = pygame.font.SysFont('Calibri', 20, False)
         SmallFont = pygame.font.SysFont('Courier New', 16, False)
         VerySmallFont = pygame.font.SysFont('Calibri', 16, False)

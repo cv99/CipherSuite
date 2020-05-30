@@ -1,8 +1,10 @@
 from part5 import *
 import statistics
+import sys
 import math
 import random
 import time
+import os
 
 
 class Message:
@@ -75,7 +77,11 @@ class Message:
         self.freqAnalysis.sort(key=(lambda z: -z[1]))
 
         for n, a in enumerate(self.freqAnalysis):
-            a[1] = str(((a[1] * 1000) // len(x)) / 10) + '%'
+            try:
+                a[1] = str(((a[1] * 1000) // len(x)) / 10) + '%'
+            except ZeroDivisionError:
+                print('Fatal Error: message empty.')
+                sys.exit('put some message in your message, please.')
 
         try:
             self.freqObjectLink.render()
@@ -519,7 +525,7 @@ class Message:
                 plq = pygame.Surface((len(population) + 40, 400))
                 plq.fill(VC.Black)
                 for count, value in enumerate(scores):
-                    plq.set_at((count + 20, int(value/100) + 20), VC.White)
+                    plq.set_at((count + 20, int(value / 100) + 20), VC.White)
                 return plq
 
             def permute(k, maxChanges, pOfSplice=0.5):
@@ -697,7 +703,49 @@ def score(string):
     return o
 
 
-with open('message.txt', 'r') as ms:
+# Select the start-up program.
+
+messageFiles = []
+d = 'messages'
+load = ''
+for path in os.listdir(d):
+    if os.path.isfile(os.path.join(d, path)) and '.txt' in path:
+        messageFiles.append(path)
+
+if len(messageFiles) == 1:
+    load = messageFiles[0]
+else:
+    tempRun = True
+    while tempRun:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        VC.Screen.fill(VC.Black)
+        plq = VC.MainFont.render('Select a message to load.', 0, VC.White)
+        VC.Screen.blit(plq, (100, 100))
+
+        n = 0
+        for path in messageFiles:
+            pos = pygame.mouse.get_pos()
+            if 80 < pos[0] < 360:
+                if 170 + 50*n < pos[1] < 170 + 50*(n+1):
+                    pygame.draw.rect(VC.Screen, VC.Blue, pygame.Rect(80, 170 + 50*n, 280, 50), 0)
+                    if pygame.mouse.get_pressed()[0]:
+                        tempRun = False
+                        load = path
+
+            plq = VC.MainFont.render(path, 0, VC.Red)
+            VC.Screen.blit(plq, (100, 185 + 50*n))
+
+            n += 1
+
+        pygame.display.flip()
+
+print('Loading with start-up message...', load)
+
+with open('messages/' + load, 'r') as ms:
     """Creates the message object."""
     message = Message(ms.read())
     message.parent = VC
