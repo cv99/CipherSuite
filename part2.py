@@ -1,5 +1,5 @@
 from part3 import *
-
+from ext1 import ioc, generalIntelligence
 
 # noinspection SpellCheckingInspection, PyTypeChecker
 def calculate_key_length(obj):
@@ -50,15 +50,6 @@ def doReplaceL(obj):
 def debug(obj):
     """Can perform various debug functions. Triggered by key escape."""
     print("Looks like we haven't got anything set up for debug right now.")
-
-
-def ioc(text: str):
-    """Calculates the Index of Coincidence for the text argument."""
-    try:
-        return sum([text.upper().count(letter) * (text.upper().count(letter) - 1) for letter in alphabet.upper()]) / \
-               (len(text) * (len(text) - 1) / len(alphabet))
-    except ZeroDivisionError:
-        return 'N/A'
 
 
 def makeAll(obj):
@@ -148,6 +139,11 @@ def printMessage(obj):
     if not VC.selectPanel.mode == 'All':
         print('Highlighted text:')
         print(message.operationText())
+
+
+def stageGeneralAnalysis(obj):
+    obj.touch = None
+    generalIntelligence(''.join([x for x in message.operationText() if x != VC.BlankLetter]))
 
 
 def swapOrder(obj):
@@ -273,7 +269,7 @@ allowMouseText = Panel(selectPanel, 10, 160, 200, 40, typ='text', text=['Set by 
 wordInfoText = Panel(selectPanel, 75, 185, 0, 0, typ='text', text=['Separator-Index'],
                      text_colour=VC.Black, font=VC.VerySmallFont)
 msgScroll = ScrollBar(message, 303, 0, 150, 3, VC.Blue)
-caesarPanel = Panel(VC, 1000, 430, 160, 220)
+caesarPanel = Panel(VC, 1000, 430, 160, 260)
 doCaesarButton = Panel(caesarPanel, 10, 10, 120, 39, typ='button', colour=VC.Green, text=['Caesar'],
                        text_colour=VC.Black, font=VC.MainFont, on_click=message.caesar, text_offset=(10, 10))
 doAffineButton = Panel(caesarPanel, 10, 50, 120, 39, typ='button', colour=VC.Green, text=['Affine'],
@@ -284,6 +280,9 @@ doTransButton = Panel(caesarPanel, 10, 130, 120, 39, typ='button', colour=VC.Gre
                       text_colour=VC.Black, font=VC.MainFont, on_click=message.transposition, text_offset=(10, 10))
 doMorseButton = Panel(caesarPanel, 10, 170, 120, 39, typ='button', colour=VC.Green, text=['De-Morse'],
                       text_colour=VC.Black, font=VC.MainFont, on_click=morseDo, text_offset=(10, 10))
+doGeneralIntelligenceButton = Panel(caesarPanel, 10, 210, 120, 39, typ='button', colour=VC.Green,
+                                    text=['General'], text_colour=VC.Black, font=VC.MainFont,
+                                    on_click=stageGeneralAnalysis, text_offset=(10, 10))
 
 pict = pygame.Surface((40, 40))
 pict.fill(VC.ChrisBlue)
@@ -301,7 +300,7 @@ VC.visualObjects = [messagePanel, gridButton, smoothButton, replacePanel, replac
                     allowMouseCheck, allowMouseText, makeLCButton, gridSizeField, smoothSizeField,
                     msgScroll, columnarIocPanel, caesarPanel, doCaesarButton, doSubstButton, doAffineButton,
                     VC, cleanUpButton, columniseButton, undoButton, redoButton, doTransButton, doMorseButton,
-                    makeWordButton, wordInfoText, whatSeparatorField, whatIndexField]
+                    makeWordButton, wordInfoText, whatSeparatorField, whatIndexField, doGeneralIntelligenceButton]
 
 VC.keyBindings = {
     pygame.K_ESCAPE: [debug, None],
@@ -317,7 +316,8 @@ VC.keyBindings = {
     pygame.K_p: [printMessage, VC],
     pygame.K_u: [message.makeUpperCase, VC],
     pygame.K_i: [message.makeLowerCase, VC],
-    pygame.K_r: [message.reverse, VC]
+    pygame.K_r: [message.reverse, VC],
+    pygame.K_g: [stageGeneralAnalysis, VC]
 }
 
 VC.keyBindingHints = [
