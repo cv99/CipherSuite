@@ -1,5 +1,6 @@
 import pygame
 from sys import platform
+
 print('Welcome to Ciphersuite, running on:', platform)
 
 pygame.init()
@@ -19,6 +20,7 @@ class VC:
         MainFont = pygame.font.SysFont('Calibri', 20, False)
         SmallFont = pygame.font.SysFont('Courier New', 16, False)
         VerySmallFont = pygame.font.SysFont('Calibri', 16, False)
+
     BlankLetter = '_'
     lineWidth = 20
     lineSize = 56
@@ -31,10 +33,13 @@ class VC:
     Orange = (255, 255, 0)
     Red = (255, 0, 0)
     Blue = (0, 0, 255)
+    ChrisBlue = (176, 224, 230)
+    ChrisBlueTwo = (0, 135, 189)
     Purple = (117, 12, 150)
     WindowsBlueScreenOfDeath = (160, 240, 120)
     alphaOrder = False
     isGrid = True
+    displayingHelp = False
     selectPanel = None
     whichLetterField = None
     whichColumnField = None
@@ -48,6 +53,19 @@ class VC:
     whatSeparatorField = None
     wordIndex = 3
     wordSeparator = '/'
+
+    # Prepare corner up-arrow
+    cornerPlq = pygame.Surface((40, 40))
+    cornerPlq.fill(Orange)
+    upArrowIcon = pygame.transform.scale(pygame.image.load('up_arrow.png'), (30, 30))
+    cornerPlq.blit(upArrowIcon, (5, 5))
+
+    cornerPlqDown = pygame.Surface((40, 40))
+    cornerPlqDown.fill(Orange)
+    upArrowIcon = pygame.transform.scale(pygame.image.load('up_arrow.png'), (30, 30))
+    upArrowIcon = pygame.transform.flip(upArrowIcon, False, True)
+    cornerPlqDown.blit(upArrowIcon, (5, 5))
+
     morseDict = {
         '.-': 'a',
         '-...': 'b',
@@ -78,7 +96,9 @@ class VC:
 
     @classmethod
     def check_click(cls, pos: tuple):
-        pass
+        if 10 < pos[0] < 50:
+            if 750 < pos[1] < 790:
+                cls.displayingHelp = not cls.displayingHelp
 
     @classmethod
     def check_motion(cls, pos: tuple):
@@ -94,9 +114,15 @@ class VC:
 
     @classmethod
     def render(cls):
-        for n, x in enumerate(cls.keyBindingHints):
-            plq = cls.SmallFont.render(x, 0, cls.Orange)
-            cls.Screen.blit(plq, (10, (790 - (20 * len(cls.keyBindingHints))) + (n * 20)))
+        if cls.displayingHelp:
+            pygame.draw.rect(cls.Screen, cls.Black, pygame.Rect(0, 790 - (20 * len(cls.keyBindingHints)),  # x, y
+                                                                1000, (20 * len(cls.keyBindingHints))))  # length, width
+            for n, x in enumerate(cls.keyBindingHints):
+                plq = cls.SmallFont.render(x, 0, cls.Orange)
+                cls.Screen.blit(plq, (60, (790 - (20 * len(cls.keyBindingHints))) + (n * 20)))
+            cls.Screen.blit(cls.cornerPlqDown, (10, 750))
+        else:
+            cls.Screen.blit(cls.cornerPlq, (10, 750))
 
     @classmethod
     def simplePump(cls, img=None, pos=None):

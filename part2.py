@@ -49,8 +49,7 @@ def doReplaceL(obj):
 
 def debug(obj):
     """Can perform various debug functions. Triggered by key escape."""
-    obj.touch = None
-    print(message.colDragRel, message.colDragging)
+    print("Looks like we haven't got anything set up for debug right now.")
 
 
 def ioc(text: str):
@@ -287,9 +286,10 @@ doMorseButton = Panel(caesarPanel, 10, 170, 120, 39, typ='button', colour=VC.Gre
                       text_colour=VC.Black, font=VC.MainFont, on_click=morseDo, text_offset=(10, 10))
 
 pict = pygame.Surface((40, 40))
-pict.fill(VC.Purple)
+pict.fill(VC.ChrisBlue)
 undoIcon = pygame.transform.scale(pygame.image.load('undo.png'), (30, 30))
 pict.blit(undoIcon, (5, 0))
+pygame.display.set_icon(undoIcon)
 undoButton = CustomButton(480, 15, pict, undo)
 pict = pygame.transform.flip(pict, True, False)
 redoButton = CustomButton(530, 15, pict, redo)
@@ -309,6 +309,7 @@ VC.keyBindings = {
     pygame.K_l: [makeLetter, makeLetterButton],
     pygame.K_c: [makeColumn, makeColumnButton],
     pygame.K_k: [makeLC, makeLCButton],
+    pygame.K_w: [makeWord, makeWordButton],
     pygame.K_1: [message.caesar, message],
     pygame.K_2: [message.affine, message],
     pygame.K_3: [message.substitution, message],
@@ -327,6 +328,7 @@ VC.keyBindingHints = [
     'I: Makes the selected letters lowercase.',
     'K: Sets the select mode to Letter + Column.',
     'L: Sets the select mode to Letter(s).',
+    'W: Sets the select mode to Word.',
     'P: Prints the message rawText (and the selected text if applicable) to the console.',
     'R: Reverses the selected letters',
     'U: Makes the selected letters uppercase.',
