@@ -703,49 +703,53 @@ def score(string):
     return o
 
 
-# Select the start-up program.
+# Select the start-up message.
+def loadMessage():
+    messageFiles = []
+    d = 'messages'
+    load = ''
+    for path in os.listdir(d):
+        if os.path.isfile(os.path.join(d, path)) and '.txt' in path:
+            messageFiles.append(path)
 
-messageFiles = []
-d = 'messages'
-load = ''
-for path in os.listdir(d):
-    if os.path.isfile(os.path.join(d, path)) and '.txt' in path:
-        messageFiles.append(path)
+    if len(messageFiles) == 1:
+        load = messageFiles[0]
+    else:
+        tempRun = True
+        while tempRun:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
 
-if len(messageFiles) == 1:
-    load = messageFiles[0]
-else:
-    tempRun = True
-    while tempRun:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+            VC.Screen.fill(VC.Black)
+            plq = VC.MainFont.render('Select a message to load.', 0, VC.White)
+            VC.Screen.blit(plq, (100, 100))
 
-        VC.Screen.fill(VC.Black)
-        plq = VC.MainFont.render('Select a message to load.', 0, VC.White)
-        VC.Screen.blit(plq, (100, 100))
+            n = 0
+            for path in messageFiles:
+                pos = pygame.mouse.get_pos()
+                if 80 < pos[0] < 360:
+                    if 170 + 50 * n < pos[1] < 170 + 50 * (n + 1):
+                        pygame.draw.rect(VC.Screen, VC.Blue, pygame.Rect(80, 170 + 50 * n, 280, 50), 0)
+                        if pygame.mouse.get_pressed()[0]:
+                            tempRun = False
+                            load = path
 
-        n = 0
-        for path in messageFiles:
-            pos = pygame.mouse.get_pos()
-            if 80 < pos[0] < 360:
-                if 170 + 50*n < pos[1] < 170 + 50*(n+1):
-                    pygame.draw.rect(VC.Screen, VC.Blue, pygame.Rect(80, 170 + 50*n, 280, 50), 0)
-                    if pygame.mouse.get_pressed()[0]:
-                        tempRun = False
-                        load = path
+                plq = VC.MainFont.render(path, 0, VC.Red)
+                VC.Screen.blit(plq, (100, 185 + 50 * n))
 
-            plq = VC.MainFont.render(path, 0, VC.Red)
-            VC.Screen.blit(plq, (100, 185 + 50*n))
+                n += 1
 
-            n += 1
+            pygame.display.flip()
 
-        pygame.display.flip()
+    print('Loading with start-up message...', load)
 
-print('Loading with start-up message...', load)
+    with open('messages/' + load, 'r') as ms:
+        """Creates the message object."""
+        m = Message(ms.read())
+        m.parent = VC
+    return m
 
-with open('messages/' + load, 'r') as ms:
-    """Creates the message object."""
-    message = Message(ms.read())
-    message.parent = VC
+
+message = loadMessage()

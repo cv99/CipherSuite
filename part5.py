@@ -207,7 +207,7 @@ def factorise(n: int):
 
 alphabet = 'abcdefghijklmnopqrstuvwxyz'
 numbers = '1234567890'
-otherAllowedChars = ['', ',', '.', '-', '0', '1', '2', '/', ' ']
+otherAllowedChars = ['', ',', '.', '@', '-', '0', '1', '2', '/', ' ']
 
 englishLetterFrequencies = [
     ('E', '12.02%'),
