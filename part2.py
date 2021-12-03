@@ -29,6 +29,23 @@ def calculate_key_length(obj):
     message.rendUpdate()
 
 
+def column_rotate(obj):
+    """Does a rotation for solving columnar transposition ciphers"""
+    if (len(message.rawText) / VC.gridSize) % 1 == 0:
+        bSize = int(len(message.rawText) / VC.gridSize)
+        blocks = [message.rawText[bSize * n:bSize*(n+1)] for n in range(VC.gridSize)]
+        print(blocks)
+        newR = ""
+        c1 = 0
+        while len(newR) < len(message.rawText):
+            for n in range(VC.gridSize):
+                newR += blocks[n][c1]
+            c1 += 1
+        message.resetRawText(newR)
+    else:
+        print('Error: Message length', len(message.rawText), 'not multiple of column request', VC.gridSize)
+
+
 def doColumnVis(obj):
     """Works out columnar iOC for all columns."""
     obj.text = ['Col. IoC', '']
@@ -221,6 +238,10 @@ cleanUpButton = Panel(VC, 1000, 330, 160, 40, typ='button', text=['Clean Up'], t
                       font=VC.MainFont, on_click=message.clean, text_offset=(10, 10))
 columniseButton = Panel(VC, 1000, 380, 160, 40, typ='button', text=['Columnise'], text_colour=VC.Black,
                         font=VC.MainFont, on_click=calculate_key_length, text_offset=(10, 10))
+
+columnRotateButton = Panel(VC, 1000, 430, 160, 40, typ='button', text=['Column Rotate'], text_colour=VC.Black,
+                        font=VC.MainFont, on_click=column_rotate, text_offset=(10, 10))
+
 freqPanel = FreqPanel(VC, 650, 50, 140, 515)
 trigPanel = TrigPanel(VC, 800, 350, 100, 180)
 columnarIocPanel = Panel(VC, 910, 350, 80, 140, on_click=doColumnVis, typ='button', text=['Col. IoC'],
@@ -269,7 +290,7 @@ allowMouseText = Panel(selectPanel, 10, 160, 200, 40, typ='text', text=['Set by 
 wordInfoText = Panel(selectPanel, 75, 185, 0, 0, typ='text', text=['Separator-Index'],
                      text_colour=VC.Black, font=VC.VerySmallFont)
 msgScroll = ScrollBar(message, 303, 0, 150, 3, VC.Blue)
-caesarPanel = Panel(VC, 1000, 430, 160, 260)
+caesarPanel = Panel(VC, 1000, 480, 160, 260)
 doCaesarButton = Panel(caesarPanel, 10, 10, 120, 39, typ='button', colour=VC.Green, text=['Caesar'],
                        text_colour=VC.Black, font=VC.MainFont, on_click=message.caesar, text_offset=(10, 10))
 doAffineButton = Panel(caesarPanel, 10, 50, 120, 39, typ='button', colour=VC.Green, text=['Affine'],
@@ -300,7 +321,8 @@ VC.visualObjects = [messagePanel, gridButton, smoothButton, replacePanel, replac
                     allowMouseCheck, allowMouseText, makeLCButton, gridSizeField, smoothSizeField,
                     msgScroll, columnarIocPanel, caesarPanel, doCaesarButton, doSubstButton, doAffineButton,
                     VC, cleanUpButton, columniseButton, undoButton, redoButton, doTransButton, doMorseButton,
-                    makeWordButton, wordInfoText, whatSeparatorField, whatIndexField, doGeneralIntelligenceButton]
+                    makeWordButton, wordInfoText, whatSeparatorField, whatIndexField, doGeneralIntelligenceButton,
+                    columnRotateButton]
 
 VC.keyBindings = {
     pygame.K_ESCAPE: [debug, None],

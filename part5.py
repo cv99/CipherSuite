@@ -150,7 +150,9 @@ def input2(obj):
     t = ''
     while r:
         pressed = pygame.key.get_pressed()
+
         for event in pygame.event.get():
+            print(event)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 r = False
             if event.type == pygame.KEYDOWN:

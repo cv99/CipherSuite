@@ -459,7 +459,7 @@ class Message:
 
         while len(still_to_do) > 0:
             base_character = still_to_do[0]
-            best_score = score(mask)
+            best_score = 0
             best_char = ''
             for checkChar in still_to_replace:
                 if score(mask.replace(base_character, checkChar)) > best_score:

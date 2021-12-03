@@ -1,5 +1,6 @@
 alphabet = 'abcdefghijklmnopqrstuvwxyz'
 
+
 def ioc(text: str):
     """Calculates the Index of Coincidence for the text argument."""
     try:
