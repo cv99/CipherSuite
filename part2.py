@@ -1,6 +1,7 @@
 from part3 import *
 from ext1 import ioc, generalIntelligence
 
+
 # noinspection SpellCheckingInspection, PyTypeChecker
 def calculate_key_length(obj):
     """Searches for a good column length for the message."""

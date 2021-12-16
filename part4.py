@@ -38,6 +38,7 @@ class Message:
         self.trigObjectLink = None
         self.allowMouseCheck = None
         self.trigramAnalysis = []
+        self.lenFactors = ""
         self.basicAnalysis(VC)
 
     def affine(self, obj):

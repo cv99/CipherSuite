@@ -238,6 +238,6 @@ englishLetterFrequencies = [
     ('Q', '0.11%'),
     ('J', '0.10%'),
     ('Z', '0.07%'),
-    (' ', '')]
+    ]
 
 sortedELF = [float(x[1][:-1]) for x in sorted(englishLetterFrequencies, key=(lambda x: x[0]))[1:]]
